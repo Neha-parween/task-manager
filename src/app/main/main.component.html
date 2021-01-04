@@ -1,0 +1,97 @@
+
+<div class="toolbar" role="banner">
+  <span style="margin-left: 100px;font-size: 20px;color: black;">Task Manager</span>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" (click)="OpenAddTaskPopup()">Add New Task</button>
+</div>
+
+<div class="container">
+
+  <div class="leftpane">
+    <span style="color: black;">Pending</span>
+    <table>
+        <tr *ngFor="let x of list" [dragScope]="'pending'" draggable [dragData]="x" class="list-group-item" style="width: 200px;color: orange;">
+          <td>
+            <i class="fa fa-arrow-circle-up" style="float: left;" *ngIf="x.Priority == '1'"></i>
+            <i class="fa fa-arrow-circle-down" style="float: left;" *ngIf="x.Priority == '3'"></i>
+            <i class="fa fa-window-minimize" style="float: left;" *ngIf="x.Priority == '2'"></i>
+          </td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td style="margin-bottom: 5px;">{{x.Title}}</td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td><i class="fa fa-pencil" aria-hidden="true" (click)="EditTask(x)"></i></td>
+          <td><i class="fa fa-trash" aria-hidden="true" (click)="DeleteTask(x.Id,'Pending')"></i></td>
+        </tr>
+    </table>
+    </div>
+    <div class="middlepane" [dropScope]="'pending'" droppable (onDrop)="onDrop($event)">
+        <span style="color: black;">In Process</span> 
+        <table>
+          <tr *ngFor="let x of inProcessList" [dragScope]="'process'" draggable [dragData]="x" class="list-group-item" style="width: 200px; color: yellow;">
+            <td>
+              <i class="fa fa-arrow-circle-up" style="float: left;" *ngIf="x.Priority == '1'"></i>
+              <i class="fa fa-arrow-circle-down" style="float: left;" *ngIf="x.Priority == '3'"></i>
+              <i class="fa fa-window-minimize" style="float: left;" *ngIf="x.Priority == '2'"></i>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="margin-bottom: 5px;">{{x.Title}}</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><i class="fa fa-trash" aria-hidden="true" (click)="DeleteTask(x.Id,'InProcess')"></i></td>
+          </tr>
+      </table> 
+    </div>
+    <div class="rightpane" [dropScope]="'process'" droppable (onDrop)="onDropComplete($event)">
+        <span style="color: black;">Completed</span>
+        <span style="margin-left: 20px;" [ngClass]="percentclass">({{percent}}%)</span>
+        <table>
+          <tr *ngFor="let x of completedList" draggable [dragData]="x" class="list-group-item" style="width: 200px; color: green;">
+            <td>
+              <i class="fa fa-arrow-circle-up" style="float: left;" *ngIf="x.Priority == '1'"></i>
+              <i class="fa fa-arrow-circle-down" style="float: left;" *ngIf="x.Priority == '3'"></i>
+              <i class="fa fa-window-minimize" style="float: left;" *ngIf="x.Priority == '2'"></i>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="margin-bottom: 5px;">{{x.Title}}</td>            
+          </tr>
+      </table> 
+    </div>
+
+</div>
+
+<div id="modalAddTask" style="display:none;">
+    <div style=" background: #6693c1;padding: 8px;font-size: 16px;color: #fff;margin-bottom: 10px;border-top-right-radius: 10px;border-top-left-radius: 10px;font-weight: bold;width: 100%;">Add Task</div>
+    <form #addtaskform="ngForm" autocomplete="off">
+      <input type="hidden" id="Id" name="Id" #Id="ngModel" [(ngModel)]="selectedTask.Id">
+      <div style="float: left;width: 100%;padding: 25px;">     
+      <div class="tblBackColor" style="border: none;padding: 0px;float: left;width: 100%;margin-bottom: 10px;">
+    <div class="col-md-12" style="padding:0px;">     
+        <div class="form-group">
+            <input type="text" class="form-control" id="txtTitle" name="Title" #Title="ngModel" [(ngModel)]="selectedTask.Title" placeholder="Title">
+        </div>       
+        <div class="form-group">
+            <select class="form-control" id="ddlPriority" name="Priority" #Priority="ngModel" [(ngModel)]="selectedTask.Priority">
+              <option value="">--Select Priority--</option>
+              <option value="1">High</option>
+              <option value="2">Normal</option>
+              <option value="3">Low</option>
+            </select>
+          </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="txtDate" name="Date" #Date="ngModel" [(ngModel)]="selectedTask.Date" placeholder="Completion Date" bsDatepicker>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="txtDesc" name="Description" #Description="ngModel" [(ngModel)]="selectedTask.Description" placeholder="Description">
+        </div>
+        
+    </div>
+  </div>
+  <div style="float: left;width: 100%;text-align: center;">
+    <button type="button" class="btn btn-success" style="margin: 0px 20px 5px 0px;" (click)="SaveTask(addtaskform)">Save</button>    
+    <button type="button" class="btn btn-success" style="margin: 0px 20px 5px 0px;" (click)="CloseAddTaskPopup()">Close</button>   
+  </div>
+  </div>
+  </form>
+</div>
+
+
+<div class="Role_Overley" id="Role_Overley"></div>
